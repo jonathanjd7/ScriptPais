@@ -1,0 +1,19 @@
+Sector,Pais,actividad,Cuenta de Nombre,Cuenta de Direccion,Cuenta de Telefono,Cuenta de Mail,Cuenta de Categoria,Cuenta de Website,precios,URL,Sector_clean,Pais_clean
+Empresas y Tiendas de Productos Congelados,españa,Alimentacion_Congelados,1546.0,1509.0,1394.0,627.0,1547.0,1017.0,7.73,https://gsas.es/producto/base-de-datos-de-tiendas-de-congelados-en-espana,Empresas y Tiendas de Productos Congelados,españa
+Tiendas de Alimentacion Ecologica,españa,Alimentacion_Ecologica,2108.0,1953.0,1905.0,603.0,2109.0,1265.0,10.54,https://gsas.es/producto/base-de-datos-de-tiendas-de-alimentacion-ecologica-en-espana,Tiendas de Alimentacion Ecologica,españa
+Tiendas de Frutos Secos,españa,Alimentacion_Frutos_Secos,271.0,264.0,233.0,84.0,271.0,154.0,1.5,https://gsas.es/producto/base-de-datos-de-tiendas-de-frutos-secos-en-espana,Tiendas de Frutos Secos,españa
+Tiendas de Golosinas,españa,Alimentacion_Golosinas,3809.0,3659.0,2896.0,552.0,3812.0,1577.0,19.045,https://gsas.es/producto/base-de-datos-de-tiendas-de-golosinas-en-espana,Tiendas de Golosinas,españa
+Tiendas de Productos Gourmet,españa,Alimentacion_Gourmet,1300.0,1246.0,1179.0,389.0,1300.0,796.0,6.5,https://gsas.es/producto/base-de-datos-de-tiendas-gourmet-espana,Tiendas de Productos Gourmet,españa
+Heladerias y Tiendas de Helados,españa,Alimentacion_Helados,5383.0,5327.0,3565.0,834.0,5384.0,2420.0,26.915,https://gsas.es/producto/base-de-datos-de-tiendas-de-helados-en-espana,Heladerias y Tiendas de Helados,españa
+Sector del Aceite,españa,Paq_Alimentacion_Aceite,2187.0,2031.0,1932.0,903.0,2187.0,1570.0,10.935,https://gsas.es/producto/base-de-datos-de-tiendas-de-aceite-en-espana,Sector del Aceite,españa
+Empresas de Conservas,españa,Paq_Alimentacion_Conservas,861.0,835.0,762.0,357.0,861.0,627.0,4.305,https://gsas.es/producto/base-de-datos-de-tiendas-de-conservas-en-espana,Empresas de Conservas,españa
+Tiendas de Especias,españa,Paq_Alimentacion_Especias,301.0,284.0,274.0,112.0,301.0,208.0,1.505,https://gsas.es/producto/base-de-datos-de-tiendas-de-especias-en-espana,Tiendas de Especias,españa
+Mayoristas de Alimentacion,españa,Paq_Alimentacion_Mayorista,855.0,824.0,776.0,323.0,856.0,562.0,4.275,https://gsas.es/producto/base-de-datos-datos-de-empresas-mayoristas-o-venta-al-por-mayor-en-espana,Mayoristas de Alimentacion,españa
+Empresas de Produccion y/o venta de Queso,españa,Paq_Alimentacion_Queso,2000.0,1898.0,1748.0,655.0,2001.0,1287.0,10.0,https://gsas.es/producto/base-de-datos-de-tiendas-de-quesos-en-espana,Empresas de Produccion y/o venta de Queso,españa
+Hoteles de 2 Estrellas,españa,hoteles 2,7980.0,7982.0,7640.0,3288.0,7984.0,6976.0,39.456,https://gsas.es/producto/base-de-datos-de-hoteles-alojamientos-de-2-estrellas-de-espana,Hoteles de 2 Estrellas,españa
+Hoteles de 3 Estrellas ,españa,hoteles3,7588.0,7588.0,7220.0,3603.0,7589.0,6934.0,43.236,https://gsas.es/producto/base-de-datos-de-hoteles-alojamientos-de-3-estrellas-de-espana,Hoteles de 3 Estrellas,españa
+Empresas de Tapicerias y Tapiceros,españa,tapiceria,6615.0,6494.0,6052.0,1607.0,6651.0,3228.0,29.7675,https://gsas.es/producto/base-de-datos-de-tapicerias-de-espana,Empresas de Tapicerias y Tapiceros,españa
+Empresas de Actividades Forestales,españa,forestal,7503.0,6639.0,2709.0,1250.0,7469.0,2769.0,30.012,https://gsas.es/producto/base-de-datos-de-empresas-del-sector-forestal-en-espana,Empresas de Actividades Forestales,españa
+Oficinas de Correos,españa,correos,3500.0,3503.0,2898.0,3504.0,3504.0,3504.0,15.75,https://gsas.es/producto/base-de-datos-oficinas-correos-en-espana,Oficinas de Correos,españa
+Empresas de Pirotecnia,españa,pirotecnia,793.0,792.0,190.0,679.0,793.0,603.0,3.965,https://gsas.es/producto/base-de-datos-de-pirotecnia-de-espana,Empresas de Pirotecnia,españa
+,,,,,,,,,,,,

@@ -1,0 +1,19 @@
+﻿
+FullName                                                                                                               
+--------                                                                                                               
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\csv_creados                         
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\datos_maestros                      
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\docsparascript                      
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\Plantillas_creadas                  
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\1_INSTALAR_DEPENDENCIAS.bat         
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\2_EJECUTAR_SCRIPT.bat               
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\CONTENIDO.txt                       
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\DefinitivoLocalidades.py            
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\INICIO_RAPIDO.txt                   
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\README_LOCALIDADES.md               
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\requirements.txt                    
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\datos_maestros\1_maestro_localida...
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\docsparascript\plantilla_localida...
+C:\Users\Jonathan JD\Desktop\jonathan\Script_Generador_Fichas_Localidades_PORTABLE\docsparascript\site_maps_2025_02_...
+
+
