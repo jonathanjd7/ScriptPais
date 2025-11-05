@@ -215,13 +215,23 @@ df_paises = df_paises.drop_duplicates(subset=['Sector_clean', 'Pais_clean'], kee
 total_paises = len(df_paises)
 print(f"Total de combinaciones Sector-Pais únicas en el archivo: {total_paises}")
 
+# Filtrar solo las filas que tienen URL (para mantener el orden con url.csv)
+if 'URL' in df_paises.columns:
+    # Mantener solo las filas con URL válida, preservando el orden original
+    df_paises = df_paises[df_paises['URL'].notna() & (df_paises['URL'].astype(str).str.strip() != '')].copy()
+    # Resetear índice para mantener orden secuencial (0, 1, 2, ...)
+    df_paises = df_paises.reset_index(drop=True)
+    print(f"Filtradas {len(df_paises)} filas con URL válida (manteniendo orden del Excel)")
+else:
+    print("[AVISO] No se encontro la columna 'URL' en el Excel. Se generaran todas las plantillas.")
+
 # Aplicar límite si NUM_FICHAS_PRUEBA está configurado
 if NUM_FICHAS_PRUEBA is not None and NUM_FICHAS_PRUEBA > 0:
     df_paises = df_paises.head(NUM_FICHAS_PRUEBA)
     print(f"[MODO PRUEBA] Generando solo las primeras {NUM_FICHAS_PRUEBA} fichas")
     print(f"[CONSEJO] Para generar todas las fichas ({total_paises}), cambia NUM_FICHAS_PRUEBA = None en la linea 31\n")
 else:
-    print(f"[MODO COMPLETO] Generando TODAS las {total_paises} fichas\n")
+    print(f"[MODO COMPLETO] Generando TODAS las {len(df_paises)} fichas\n")
 
 print(f"Columnas disponibles: {df_paises.columns.tolist()}\n")
 
@@ -241,6 +251,7 @@ print(f"CSV de paises guardado en: {csv_output}\n")
 # Contador de documentos generados
 contador = 0
 errores = 0
+indice_secuencial = 0  # Contador para el número en el nombre del archivo
 
 print("Generando documentos por pais...\n")
 
@@ -256,6 +267,9 @@ for index, fila in df_paises.iterrows():
             continue
         
         pais = pais_fila
+        
+        # Incrementar índice secuencial antes de generar el archivo (empezará en 1)
+        indice_secuencial += 1
         
         # Capitalizar nombres correctamente
         pais_formateado = capitalizar_pais(pais)
@@ -281,15 +295,18 @@ for index, fila in df_paises.iterrows():
             **urls_diccionario
         }
         
-        # Nombre del archivo: Sector_Pais_Pais.docx
+        # Nombre del archivo: numero_Sector_Pais_Pais.docx (para mantener orden con url.csv)
         pais_archivo = eliminar_acentos_slash(pais)
         sector_archivo = eliminar_acentos_slash(sector_formateado)
-        nombre_archivo = f'{sector_archivo}_Pais_{pais_archivo}.docx'
+        # Añadir número secuencial al inicio para mantener el orden con url.csv
+        nombre_archivo = f'{indice_secuencial}_{sector_archivo}_Pais_{pais_archivo}.docx'
         
         # Generar el documento directamente en la carpeta base
         doc_plantilla = DocxTemplate(PLANTILLA_PAISES)
         doc_plantilla.render(context)
         doc_plantilla.save(os.path.join(base_directory, nombre_archivo))
+        
+        # Incrementar contador de documentos generados
         contador += 1
         
         # Mostrar progreso
@@ -312,14 +329,15 @@ print("="*60 + "\n")
 print("Generando CSV con URLs del sitemap...")
 generador_csv_con_url_paises(base_directory, EXCEL_FILE_SITEMAPS)
 
-# Generar CSV con URLs del Excel ITALIA
+# Generar CSV con URLs del Excel ITALIA (en el mismo orden que las plantillas generadas)
 print("Generando CSV con URLs del Excel ITALIA...")
 if 'URL' in df_paises.columns:
-    urls_italia = df_paises['URL'].dropna().tolist()
+    # Obtener URLs en el mismo orden que df_paises (ya filtrado y ordenado)
+    urls_italia = df_paises['URL'].tolist()
     urls_csv = os.path.join(base_directory, 'url.csv')
-    # Guardar sin encabezado, solo las URLs
-    pd.DataFrame(urls_italia).to_csv(urls_csv, index=False, header=False, encoding='utf-8')
-    print(f"Archivo CSV de URLs (ITALIA) generado: {urls_csv}")
+    # Guardar sin encabezado, solo las URLs (en el mismo orden que las plantillas)
+    pd.DataFrame(urls_italia, columns=['URL']).to_csv(urls_csv, index=False, header=False, encoding='utf-8')
+    print(f"Archivo CSV de URLs (ITALIA) generado: {urls_csv} ({len(urls_italia)} URLs, mismo orden que plantillas)")
 else:
     print("[AVISO] No se encontro la columna 'URL' en el Excel ITALIA")
 
