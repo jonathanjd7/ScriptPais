@@ -38,6 +38,7 @@ VERBOSE = False  # Controla el nivel de salida por consola
 # Rutas relativas (PORTABLE - no necesita modificación)
 OUTPUT_DIRECTORY_CSV = os.path.join(BASE_DIR, 'csv_creados')
 ARCHIVO_EXCEL_LOCALIDADES = os.path.join(BASE_DIR, 'datos_maestros', '1_maestro_localidades_nw_20251028_2.xlsx')
+ARCHIVO_SITE_MAPS = os.path.join(BASE_DIR, 'docsparascript', 'site_maps_2025_02_12.xlsx')
 PLANTILLA_LOCALIDADES = os.path.join(BASE_DIR, 'docsparascript', 'plantilla_localidades.docx')
 PLANTILLAS_CREADAS_DIR = os.path.join(BASE_DIR, 'Plantillas_creadas')
 
@@ -51,6 +52,9 @@ if not os.path.exists(ARCHIVO_EXCEL_LOCALIDADES):
 
 if not os.path.exists(PLANTILLA_LOCALIDADES):
     raise FileNotFoundError(f"La plantilla de localidades {PLANTILLA_LOCALIDADES} no existe.")
+
+if not os.path.exists(ARCHIVO_SITE_MAPS):
+    raise FileNotFoundError(f"El archivo site_maps {ARCHIVO_SITE_MAPS} no existe.")
 
 if VERBOSE:
     print("Configuracion cargada correctamente.")
@@ -189,27 +193,45 @@ def generar_url_localidad(localidad, provincia):
     return url
 
 
-def get_random_urls(ARCHIVO_EXCEL_LOCALIDADES, num_urls=10):
-    """Obtiene URLs aleatorias de la columna 'url' del archivo de localidades"""
-    df = pd.read_excel(ARCHIVO_EXCEL_LOCALIDADES)
+def get_random_urls(archivo_site_maps, num_urls=10):
+    """Obtiene URLs aleatorias del archivo site_maps filtrando por Categoria == 'blog'"""
+    df = pd.read_excel(archivo_site_maps)
     
-    # Buscar la columna 'url' sin distinguir mayúsculas/minúsculas
-    columna_url = None
+    # Buscar la columna 'Categoria' sin distinguir mayúsculas/minúsculas
+    columna_categoria = None
     for col in df.columns:
+        if col.lower().strip() == 'categoria':
+            columna_categoria = col
+            break
+    
+    if columna_categoria is None:
+        columnas_disponibles = ', '.join(df.columns.tolist())
+        raise ValueError(f"El archivo site_maps no contiene la columna 'Categoria'. Columnas disponibles: {columnas_disponibles}")
+    
+    # Filtrar filas donde Categoria == 'blog'
+    df_blog = df[df[columna_categoria].astype(str).str.strip().str.lower() == 'blog'].copy()
+    
+    if len(df_blog) == 0:
+        raise ValueError(f"No se encontraron filas con Categoria == 'blog' en el archivo site_maps")
+    
+    # Buscar la columna 'URL' sin distinguir mayúsculas/minúsculas
+    columna_url = None
+    for col in df_blog.columns:
         if col.lower().strip() == 'url':
             columna_url = col
             break
     
     if columna_url is None:
-        columnas_disponibles = ', '.join(df.columns.tolist())
-        raise ValueError(f"El archivo de localidades no contiene la columna 'url'. Columnas disponibles: {columnas_disponibles}")
+        columnas_disponibles = ', '.join(df_blog.columns.tolist())
+        raise ValueError(f"El archivo site_maps no contiene la columna 'URL'. Columnas disponibles: {columnas_disponibles}")
     
-    urls = df[columna_url].dropna().astype(str).tolist()
-    # Filtrar URLs vacías o que solo contengan espacios
+    # Extraer URLs y filtrar vacías
+    urls = df_blog[columna_url].dropna().astype(str).tolist()
     urls = [url.strip() for url in urls if url.strip()]
     
     if len(urls) < num_urls:
-        raise ValueError(f"No hay suficientes URLs. Solo hay {len(urls)} disponibles, se necesitan {num_urls}")
+        raise ValueError(f"No hay suficientes URLs de blog. Solo hay {len(urls)} disponibles, se necesitan {num_urls}")
+    
     urls_seleccionadas = random.sample(urls, num_urls)
     return {f'URL_{i+1}': url for i, url in enumerate(urls_seleccionadas)}
 
@@ -241,7 +263,7 @@ def generador_csv_con_url_localidades(sector_directory_seleccionar, df_localidad
             print("[AVISO] No se encontraron URLs válidas en el DataFrame.")
             return
 
-        output_file_url = os.path.join(sector_directory_seleccionar, "url.csv")
+        output_file_url = os.path.join(sector_directory_seleccionar, "urls.csv")
         pd.Series(urls).to_csv(output_file_url, index=False, header=False, encoding='utf-8')
         print(f"Archivo CSV de URLs generado: {output_file_url}")
         print(f"   Total de URLs exportadas: {len(urls)}")
@@ -276,8 +298,8 @@ if VERBOSE:
     print(f"Columnas disponibles: {df_localidades.columns.tolist()}\n")
 
 # Obtener URLs para usar en todas las plantillas
-print("Obteniendo URLs desde datos_maestros...")
-urls_diccionario = get_random_urls(ARCHIVO_EXCEL_LOCALIDADES, num_urls=10)
+print("Obteniendo URLs desde site_maps (categoría blog)...")
+urls_diccionario = get_random_urls(ARCHIVO_SITE_MAPS, num_urls=10)
 
 # Crear directorio para documentos del sector
 sector_directory = os.path.join(PLANTILLAS_CREADAS_DIR, eliminar_acentos_slash(SECTOR))
@@ -337,12 +359,17 @@ for index, fila in df_localidades.iterrows():
             **urls_diccionario
         }
         
-        # Nombre del archivo: numero_Sector_Localidad_de_Provincia.docx (para mantener orden con url.csv)
-        localidad_archivo = eliminar_acentos_slash(localidad)
-        provincia_archivo = eliminar_acentos_slash(provincia)
-        sector_prefix = eliminar_acentos_slash(SECTOR).strip('_')
-        # Añadir número secuencial al inicio para mantener el orden con url.csv
-        nombre_archivo = f'{indice_secuencial}_{sector_prefix}_{localidad_archivo}_de_{provincia_archivo}.docx'
+        # Nombre del archivo: numero_(datoscolumnaC).docx
+        # Obtener el nombre del archivo de la columna 'nomarchivo' (columna C)
+        if 'nomarchivo' in fila.index and pd.notna(fila['nomarchivo']):
+            nomarchivo = str(fila['nomarchivo']).strip()
+            # Normalizar el nombre del archivo (eliminar acentos y caracteres especiales)
+            nomarchivo = eliminar_acentos_slash(nomarchivo)
+        else:
+            # Si no existe la columna nomarchivo, usar localidad como fallback
+            nomarchivo = eliminar_acentos_slash(localidad)
+        # Añadir número secuencial al inicio para mantener el orden con urls.csv
+        nombre_archivo = f'{indice_secuencial}_{nomarchivo}.docx'
         
         # Generar el documento
         generar_documento_localidad(context, nombre_archivo, sector_directory)

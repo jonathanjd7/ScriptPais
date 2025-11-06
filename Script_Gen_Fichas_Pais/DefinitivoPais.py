@@ -334,7 +334,7 @@ print("Generando CSV con URLs del Excel ITALIA...")
 if 'URL' in df_paises.columns:
     # Obtener URLs en el mismo orden que df_paises (ya filtrado y ordenado)
     urls_italia = df_paises['URL'].tolist()
-    urls_csv = os.path.join(base_directory, 'url.csv')
+    urls_csv = os.path.join(base_directory, 'urls.csv')
     # Guardar sin encabezado, solo las URLs (en el mismo orden que las plantillas)
     pd.DataFrame(urls_italia, columns=['URL']).to_csv(urls_csv, index=False, header=False, encoding='utf-8')
     print(f"Archivo CSV de URLs (ITALIA) generado: {urls_csv} ({len(urls_italia)} URLs, mismo orden que plantillas)")

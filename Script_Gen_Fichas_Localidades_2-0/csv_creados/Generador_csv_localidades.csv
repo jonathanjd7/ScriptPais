@@ -1,11 +1,11 @@
-provincia,localidad,Nombre,Direccion,Telefono,Mail,Category,Website,Unnamed: 8,precio,cpm,miles,registros,url,Unnamed: 14
-A Coruña,A Aldea De Arriba (Santa Marta De Babio - Bergondo),497,488,425,185,468,335,,2.982,6.0,0.497,497.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-a-aldea-de-arriba-en-la-provincia-de-a-coruna/,
-A Coruña,A Barcala Cambre),315,313,264,78,293,157,,1.8900000000000001,6.0,0.315,315.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-a-barcala-en-la-provincia-de-a-coruna/,
-A Coruña,"A Brea,  (Carballo)",746,739,595,116,732,309,,4.476,6.0,0.746,746.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-a-brea-en-la-provincia-de-a-coruna/,
-A Coruña,A Coruña - La Coruña,12763,12639,10696,3709,12401,8066,,63.815,5.0,12.763,12763.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-la-coruna-en-la-provincia-de-a-coruna/,
-A Coruña,Abegondo,360,329,209,60,331,139,,2.16,6.0,0.36,360.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-abegondo-en-la-provincia-de-a-coruna/,
-A Coruña,Acea Da Ma (Fonteculler),638,625,526,145,620,366,,3.8280000000000003,6.0,0.638,638.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-acea-da-ma-en-la-provincia-de-a-coruna/,
-A Coruña,Acea De Ama (O Burgo),608,603,503,158,588,335,,3.6479999999999997,6.0,0.608,608.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-acea-de-ama-en-la-provincia-de-a-coruna/,
-A Coruña,Aeropuerto De Alvedro,373,368,325,129,361,276,,2.238,6.0,0.373,373.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-aeropuerto-de-alvedro-en-la-provincia-de-a-coruna/,
-A Coruña,Agoso (Santa Baia De Oza - Teo),461,432,345,134,430,270,,2.766,6.0,0.461,461.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-agoso-en-la-provincia-de-a-coruna/,
-A Coruña,Agras (Nosa Señora Dos Desamparados De Xubia - Naron),368,363,290,66,353,163,,2.208,6.0,0.368,368.0,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-agras-en-la-provincia-de-a-coruna/,
+provincia,localidad,nomarchivo,Nombre,Direccion,Telefono,Mail,Category,Website,Unnamed: 9,precio,cpm,miles,registros,url
+Cadiz,Las Abiertas,Abiertas,1582,1547,1224,332,1563,817,,9.492,6,1.582,1582,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-las-abiertas-en-la-provincia-de-cadiz/
+Cadiz,El Alamillo,Alamillo,344,312,202,61,332,151,,2.064,6,0.344,344,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-el-alamillo-en-la-provincia-de-cadiz/
+Cadiz,Los Alburejos,Alburejos,608,592,459,122,597,314,,3.6479999999999997,6,0.608,608,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-los-alburejos-en-la-provincia-de-cadiz/
+Cadiz,Alcala De Los Gazules,AlcaDe Gazules,337,321,244,50,332,161,,2.0220000000000002,6,0.337,337,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-alcala-de-los-gazules-en-la-provincia-de-cadiz/
+Castellon,Alcala De Xivert,AlcaDe Xivert,309,293,180,46,299,137,,1.854,6,0.309,309,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-alcala-de-xivert-en-la-provincia-de-castellon/
+Castellon,Alcossebre,Alcossebre,686,669,516,174,677,370,,4.1160000000000005,6,0.686,686,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-alcossebre-en-la-provincia-de-castellon/
+Cadiz,Algeciras,Algeciras,6131,5911,4875,1628,5967,3467,,36.786,6,6.131,6131,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-algeciras-en-la-provincia-de-cadiz/
+Cadiz,Algodonales,Algodonales,364,345,264,61,356,169,,2.184,6,0.364,364,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-algodonales-en-la-provincia-de-cadiz/
+Cadiz,El Almarchal,Almarchal,559,543,409,137,550,291,,3.354,6,0.559,559,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-el-almarchal-en-la-provincia-de-cadiz/
+Castellon,Almassora - Almazora,Almassora - Almazora,1781,1766,1440,483,1726,1062,,10.686,6,1.781,1781,https://gsas.es/producto/base-de-datos-de-empresas-de-la-localidad-de-almazora-en-la-provincia-de-castellon/
