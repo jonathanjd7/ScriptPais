@@ -47,6 +47,14 @@ if not os.path.exists(carpeta_word):
     print("Por favor, asegúrate de que la carpeta 'Documentos' esté en el mismo directorio que el script.")
     print(f"Directorio del script: {script_dir}")
 
+resumen = {
+    "archivos": [],
+    "urls": [],
+    "procesados": [],
+    "errores": [],
+    "saltos": []
+}
+
 try:
     # Abre la página
     driver.get(url)
@@ -101,6 +109,20 @@ try:
     WebDriverWait(driver, 20).until(EC.url_changes(url))
 
     # Función para leer el documento de Word
+    def registrar_error(fila, url, archivo, motivo):
+        resumen["errores"].append({
+            "fila": fila,
+            "url": url,
+            "archivo": archivo,
+            "motivo": motivo
+        })
+
+    def registrar_salto(fila, razon):
+        resumen["saltos"].append({
+            "fila": fila,
+            "razon": razon
+        })
+
     def leer_documento(path):
         try:
             doc = Document(path)
@@ -326,6 +348,7 @@ try:
             nombre_archivo = os.path.basename(archivo)
             print(f"  {idx}. {nombre_archivo}")
         print()
+        resumen["archivos"] = [os.path.basename(archivo) for archivo in archivos_word]
 
     # Abre el archivo CSV y lee las URLs
     csv_path = os.path.join(carpeta_word, 'urls.csv')  # Asegúrate de que la ruta sea correcta
@@ -343,6 +366,7 @@ try:
         for idx, url in enumerate(urls_list, 1):
             print(f"  Fila {idx}: {url}")
         print()
+        resumen["urls"] = urls_list.copy()
         
         # Verificar que el número de archivos coincida con el número de URLs
         if len(archivos_word) != len(urls_list):
@@ -356,13 +380,16 @@ try:
             for i, row in enumerate(url_reader):
                 if i >= len(archivos_word):
                     print("No hay más archivos .docx para asignar a las URLs.")
+                    registrar_salto(i + 1, "No hay archivo Word disponible para esta fila")
                     break
                 if not row:
                     print(f"Fila {i+1} vacía. Saltando...")
+                    registrar_salto(i + 1, "Fila vacía en el CSV")
                     continue
                 product_url = row[0].strip()
                 if not product_url:
                     print(f"URL en la fila {i+1} está vacía. Saltando...")
+                    registrar_salto(i + 1, "URL vacía en el CSV")
                     continue
 
                 archivo = archivos_word[i]
@@ -373,7 +400,13 @@ try:
                 print(f"  Archivo Word: {nombre_archivo}")
                 print(f"{'='*80}")
 
-                driver.get(product_url)
+                try:
+                    driver.get(product_url)
+                except Exception as e:
+                    mensaje_error = f"Error al abrir la URL: {e}"
+                    print(mensaje_error)
+                    registrar_error(i + 1, product_url, nombre_archivo, mensaje_error)
+                    continue
 
                     # Intentar hacer clic en "Editar producto"
                 try:
@@ -383,9 +416,11 @@ try:
                         edit_product_button.click()
                 except TimeoutException:
                         print(f"No se encontró el botón 'Editar producto' en la URL: {product_url}. Saltando...")
+                        registrar_error(i + 1, product_url, nombre_archivo, "Botón 'Editar producto' no disponible")
                         continue
                 except Exception as e:
                         print(f"Error al hacer clic en 'Editar producto' en la URL: {product_url}. Error: {e}. Saltando...")
+                        registrar_error(i + 1, product_url, nombre_archivo, f"Error al hacer clic en 'Editar producto': {e}")
                         continue
 
                     # Extraer y procesar datos del archivo Word
@@ -492,10 +527,18 @@ try:
                         # Esperar brevemente para asegurar que la actualización se complete
                         time.sleep(120)
 
+                        resumen["procesados"].append({
+                            "fila": i + 1,
+                            "url": product_url,
+                            "archivo": nombre_archivo
+                        })
+
                 except TimeoutException:
                         print(f"Tiempo de espera agotado al intentar actualizar la URL: {product_url}.")
+                        registrar_error(i + 1, product_url, nombre_archivo, "Tiempo de espera agotado durante la actualización")
                 except Exception as e:
                         print(f"Error al actualizar el producto en la URL: {product_url}. Error: {e}")
+                        registrar_error(i + 1, product_url, nombre_archivo, f"Error general al actualizar: {e}")
 
     except FileNotFoundError:
         print(f"No se encontró el archivo CSV en la ruta: {csv_path}")
@@ -503,6 +546,41 @@ try:
         print(f"Error al abrir o procesar el archivo CSV: {e}")
 
 finally:
+    print("\n" + "="*80)
+    print("RESUMEN DE LA EJECUCIÓN")
+    print("="*80)
+    total_urls = len(resumen["urls"])
+    total_archivos = len(resumen["archivos"])
+    total_procesados = len(resumen["procesados"])
+    total_errores = len(resumen["errores"])
+    total_saltos = len(resumen["saltos"])
+
+    print(f"URLs encontradas en CSV: {total_urls}")
+    print(f"Archivos Word encontrados: {total_archivos}")
+    print(f"Productos actualizados correctamente: {total_procesados}")
+    print(f"Registros saltados: {total_saltos}")
+    print(f"Errores durante el proceso: {total_errores}")
+
+    if resumen["saltos"]:
+        print("\nSaltos:")
+        for salto in resumen["saltos"]:
+            print(f"  Fila {salto['fila']}: {salto['razon']}")
+
+    if resumen["errores"]:
+        print("\nErrores detallados:")
+        for error in resumen["errores"]:
+            fila = error.get("fila")
+            url_error = error.get("url", "N/A")
+            archivo_error = error.get("archivo", "N/A")
+            motivo = error.get("motivo", "")
+            print(f"  Fila {fila} | URL: {url_error} | Archivo: {archivo_error}")
+            print(f"    Motivo: {motivo}")
+
+    if not resumen["errores"] and not resumen["saltos"] and total_procesados == total_urls == total_archivos:
+        print("\nResultado: ✅ Todos los productos se procesaron correctamente.")
+    else:
+        print("\nResultado: ⚠️ Revisa los detalles anteriores; hubo elementos no procesados.")
+
     # Espera antes de cerrar el navegador
     time.sleep(150)  
     # Cierra el navegador
