@@ -10,6 +10,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, NoSuchElementException
 
+
+#BY JONATHAN :D 
 # Obtener la ruta del directorio donde está el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
