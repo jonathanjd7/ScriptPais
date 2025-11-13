@@ -1,6 +1,7 @@
 import time
 import csv
 import os
+import sys
 from docx import Document
 from selenium import webdriver
 from selenium.webdriver.edge.options import Options
@@ -10,8 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, NoSuchElementException
 
-
-#BY JONATHAN :D 
 # Obtener la ruta del directorio donde está el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -124,6 +123,25 @@ try:
             "fila": fila,
             "razon": razon
         })
+
+    def pagina_no_encontrada():
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.TAG_NAME, 'body'))
+            )
+            cuerpo = driver.find_element(By.TAG_NAME, 'body').text.lower()
+            indicadores = [
+                "url no encontrada",
+                "página no encontrada",
+                "pagina no encontrada",
+                "404",
+                "no se encontró la página",
+                "no se encontro la pagina"
+            ]
+            return any(indicador in cuerpo for indicador in indicadores)
+        except Exception as e:
+            print(f"Error al verificar si la página existe: {e}")
+            return False
 
     def leer_documento(path):
         try:
@@ -409,6 +427,12 @@ try:
                     print(mensaje_error)
                     registrar_error(i + 1, product_url, nombre_archivo, mensaje_error)
                     continue
+
+                if pagina_no_encontrada():
+                    mensaje_error = "La URL no fue encontrada. Deteniendo la ejecución para revisar antes de continuar."
+                    print(mensaje_error)
+                    registrar_error(i + 1, product_url, nombre_archivo, mensaje_error)
+                    sys.exit(mensaje_error)
 
                     # Intentar hacer clic en "Editar producto"
                 try:
