@@ -2,8 +2,6 @@ import time
 import csv
 import os
 import sys
-import signal
-import atexit
 from docx import Document
 from selenium import webdriver
 from selenium.webdriver.edge.options import Options
@@ -13,43 +11,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, NoSuchElementException
 
-# Variable global para controlar la ejecución
-proceso_detenido = False
-driver = None
-
 # Obtener la ruta del directorio donde está el script
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
-# Función para manejar señales de terminación
-def manejar_terminacion(signum, frame):
-    """Maneja señales de terminación (SIGTERM, SIGINT)"""
-    global proceso_detenido, driver
-    print("\n⚠️ Señal de terminación recibida. Cerrando navegador y deteniendo proceso...")
-    proceso_detenido = True
-    cerrar_driver()
-    sys.exit(0)
-
-def cerrar_driver():
-    """Cierra el driver de forma segura"""
-    global driver
-    if driver is not None:
-        try:
-            print("🔒 Cerrando navegador Edge...")
-            driver.quit()
-            driver = None
-            print("✅ Navegador cerrado correctamente")
-        except Exception as e:
-            print(f"⚠️ Error al cerrar el navegador: {e}")
-            try:
-                driver.close()
-            except:
-                pass
-            driver = None
-
-# Registrar manejadores de señales
-if sys.platform != 'win32':
-    signal.signal(signal.SIGTERM, manejar_terminacion)
-signal.signal(signal.SIGINT, manejar_terminacion)
 
 # Configura las opciones de Edge
 options = Options()
@@ -63,9 +26,6 @@ options.add_argument("--disable-dev-shm-usage")
 # Asegúrate de tener msedgedriver.exe instalado o en el PATH
 try:
     driver = webdriver.Edge(options=options)
-    # Registrar función de limpieza para asegurar cierre del driver
-    # Se registra después de la inicialización para asegurar que driver existe
-    atexit.register(cerrar_driver)
 except Exception as e:
     print(f"Error al inicializar Edge: {e}")
     print("Por favor, asegúrate de que Microsoft Edge WebDriver esté instalado.")
@@ -438,12 +398,6 @@ try:
             url_reader = csv.reader(csvfile)
 
             for i, row in enumerate(url_reader):
-                # Verificar si el proceso debe detenerse
-                if proceso_detenido:
-                    print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                    cerrar_driver()
-                    sys.exit(0)
-                
                 if i >= len(archivos_word):
                     print("No hay más archivos .docx para asignar a las URLs.")
                     registrar_salto(i + 1, "No hay archivo Word disponible para esta fila")
@@ -467,12 +421,6 @@ try:
                 print(f"{'='*80}")
 
                 try:
-                    # Verificar nuevamente antes de abrir la URL
-                    if proceso_detenido:
-                        print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                        cerrar_driver()
-                        sys.exit(0)
-                    
                     driver.get(product_url)
                 except Exception as e:
                     mensaje_error = f"Error al abrir la URL: {e}"
@@ -480,37 +428,18 @@ try:
                     registrar_error(i + 1, product_url, nombre_archivo, mensaje_error)
                     continue
 
-                # Verificar si el proceso debe detenerse antes de continuar
-                if proceso_detenido:
-                    print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                    cerrar_driver()
-                    sys.exit(0)
-                
                 if pagina_no_encontrada():
                     mensaje_error = "La URL no fue encontrada. Deteniendo la ejecución para revisar antes de continuar."
                     print(mensaje_error)
                     registrar_error(i + 1, product_url, nombre_archivo, mensaje_error)
-                    cerrar_driver()
                     sys.exit(mensaje_error)
 
-                # Verificar si el proceso debe detenerse antes de continuar
-                if proceso_detenido:
-                    print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                    cerrar_driver()
-                    sys.exit(0)
-                
-                # Intentar hacer clic en "Editar producto"
+                    # Intentar hacer clic en "Editar producto"
                 try:
                         edit_product_button = WebDriverWait(driver, 60).until(
                             EC.element_to_be_clickable((By.LINK_TEXT, 'Editar producto'))
                         )
                         edit_product_button.click()
-                        
-                        # Verificar nuevamente después del clic
-                        if proceso_detenido:
-                            print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                            cerrar_driver()
-                            sys.exit(0)
                 except TimeoutException:
                         print(f"No se encontró el botón 'Editar producto' en la URL: {product_url}. Saltando...")
                         registrar_error(i + 1, product_url, nombre_archivo, "Botón 'Editar producto' no disponible")
@@ -520,13 +449,7 @@ try:
                         registrar_error(i + 1, product_url, nombre_archivo, f"Error al hacer clic en 'Editar producto': {e}")
                         continue
 
-                # Verificar si el proceso debe detenerse antes de procesar
-                if proceso_detenido:
-                    print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                    cerrar_driver()
-                    sys.exit(0)
-                
-                # Extraer y procesar datos del archivo Word
+                    # Extraer y procesar datos del archivo Word
                 contenido = leer_documento(archivo)
                 titulo = extraer_titulo(contenido)
                 contenido_descripcion = extraer_descripcion(contenido)
@@ -543,13 +466,7 @@ try:
                 print(f"Título extraído: {titulo}")
                 print(f"Descripción en HTML (primeros 100 caracteres): {descripcion_html[:100]}...")
 
-                # Verificar si el proceso debe detenerse antes de actualizar
-                if proceso_detenido:
-                    print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                    cerrar_driver()
-                    sys.exit(0)
-                
-                # Actualizar campos en WordPress
+                    # Actualizar campos en WordPress
                 try:
                         # Actualizar título
                         title_field = WebDriverWait(driver, 60).until(
@@ -558,12 +475,6 @@ try:
                         title_field.clear()
                         title_field.send_keys(titulo)
                         print(f"Título enviado a WordPress: {titulo}")
-                        
-                        # Verificar periódicamente durante la actualización
-                        if proceso_detenido:
-                            print("\n⚠️ Proceso detenido por el usuario. Cerrando navegador...")
-                            cerrar_driver()
-                            sys.exit(0)
 
                         # Actualizar descripción principal
                         iframe = WebDriverWait(driver, 60).until(
@@ -613,6 +524,17 @@ try:
                         metdesc_field.send_keys(Keys.CONTROL, 'a')
                         metdesc_field.send_keys(meta_desc)
                         print("Meta actualizado: " + meta_desc )
+                        
+                        # Hacer clic en el botón de actualizar después de introducir los datos de Meta
+                        actualizar_button = WebDriverWait(driver, 30).until(
+                            EC.element_to_be_clickable((By.ID, "publish"))
+                        )
+                        driver.execute_script("arguments[0].scrollIntoView(true);", actualizar_button)
+                        time.sleep(1)  # Pequeña pausa para asegurar que el botón esté visible
+                        driver.execute_script("arguments[0].click();", actualizar_button)
+                        print("Se hizo clic en el botón de 'Actualizar' después de introducir los datos de Meta.")
+                        time.sleep(3)  # Esperar a que se guarden los cambios de Meta
+                        
                         # Actualizar precio normal
                         price_field = WebDriverWait(driver, 60).until(
                             EC.visibility_of_element_located((By.ID, '_regular_price'))
@@ -640,15 +562,7 @@ try:
                         print("Se hizo clic en el botón de 'Actualizar'.")
 
                         # Esperar brevemente para asegurar que la actualización se complete
-                        # Dividir la espera en intervalos pequeños para poder detectar cancelación
-                        tiempo_espera = 120
-                        intervalo = 2  # Verificar cada 2 segundos
-                        for _ in range(tiempo_espera // intervalo):
-                            if proceso_detenido:
-                                print("\n⚠️ Proceso detenido por el usuario durante la espera. Cerrando navegador...")
-                                cerrar_driver()
-                                sys.exit(0)
-                            time.sleep(intervalo)
+                        time.sleep(120)
 
                         resumen["procesados"].append({
                             "fila": i + 1,
@@ -665,21 +579,10 @@ try:
 
     except FileNotFoundError:
         print(f"No se encontró el archivo CSV en la ruta: {csv_path}")
-    except KeyboardInterrupt:
-        print("\n⚠️ Interrupción del teclado detectada (Ctrl+C). Cerrando navegador...")
-        proceso_detenido = True
-        cerrar_driver()
-        sys.exit(0)
-    except SystemExit:
-        # Ya se está cerrando, solo re-lanzar
-        raise
     except Exception as e:
         print(f"Error al abrir o procesar el archivo CSV: {e}")
-        import traceback
-        traceback.print_exc()
 
 finally:
-    # Asegurar que el driver siempre se cierre
     print("\n" + "="*80)
     print("RESUMEN DE LA EJECUCIÓN")
     print("="*80)
@@ -715,5 +618,8 @@ finally:
     else:
         print("\nResultado: ⚠️ Revisa los detalles anteriores; hubo elementos no procesados.")
 
-    # Cerrar el navegador de forma segura
-    cerrar_driver()
+    # Espera antes de cerrar el navegador
+    time.sleep(150)  
+    # Cierra el navegador
+    driver.quit()
+    print("Navegador cerrado.")
