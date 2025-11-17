@@ -1,0 +1,103 @@
+Guía de uso para generar las plantillas de productos para Wordpress.
+(proyecto https://mantenimientoinformaticoeconomico.com/)
+
+*) PROGRAMAS NECESARIOS PARA LA EJECUCIÓN
+
+Descargar Python, ejecutar el instalador y asegurar que la casilla "Add Python to PATH" está seleccionada.
+Verificar la instalación de Python y pip en el terminal de Windows (símbolo de sistema):
+    python --version
+    pip --version
+
+En caso de requerirlo, instalar pip manualmente:
+    python -m ensurepip --upgrade
+
+Instalar además las siguientes librerías:
+    pip install selenium
+    pip install python-docx
+    pip install webdriver-manager
+    pip install pandas openpyxl
+
+*) INSTRUCCIONES DE USO
+
+A) Crear las URLs necesarias:
+
+1) Es necesario crear una página en Wordpress que sirva para duplicar. Para ello ha de tener:
+
+    1.1) Seleccionadas las categorías del producto.
+    1.2) Rellenada la(s) ficha(s) de colaboradores junto con su logo.
+
+2) Ingresar la información necesaria para cada página que se desea crear en un archivo Excel, en este orden:
+
+    COLUMNA            CONTENIDO
+
+    URL title          ej.: Reparaciones Informáticas en Sant Mateu código postal 12170
+    Código Postal      ej.: 12170
+    CCAA               ej.: Comunidad Valenciana
+    Provincia          ej.: Castellón
+    Localidad          ej.: Sant Mateu
+    Proveedor          ej.: SOS Informática
+
+    NOTA: El programa mie-subida.py seleccionará al primer proveedor que contenga el texto dentro de la celda Proveedor.
+    Es preferible ingresar el texto completo de proveedor para evitar errores en caso de que haya proveedores con nombres
+    similares (e.g.: 'Miguel Montoya' y 'Miguel Montoya Servicio Informático Urgente 24h').
+
+    2.1) El nombre y dirección del archivo Excel es 'Generador MIE/fichas_a_generar/ficha_a_generar.xlsx'
+    Asegurarse de que los datos están correctamente escritos con mayúsculas y tildes, porque así aparecerán en 
+    la página.
+    Verificar que el campo a llenar en 'URL title' no contiene doble espacios, comas, apóstrofes o símbolos 
+    no alfanuméricos, porque eso generará inconsistencias al crear las URLs.
+
+3) En el programa generador de URLs (1-duplicador_urls.py) se ha de hacer algunos ajustes 
+para cada formato de producto que se cree:
+
+    3.1) Especificar la dirección web de la página plantilla creada en el paso 1: variable 'url_base', 
+    ubicada en la línea 63.
+    3.2) La línea 66 almacena la dirección del dominio ('https://mantenimientoinformaticoeconomico.com/producto/'). 
+    En principio no debería ser necesario cambiarlo.
+    3.3) Si se cambia el nombre o la ubicación del fichero Excel, es necesario actualizar la variable 'EXCEL_FILEPATH' 
+    en la línea 56.
+
+4) Cerrar el fichero Excel, y ejecutar el programa 1-duplicador_urls.py.
+Para ejecutar el programa hay que abrirlo con Visual Studio Code y clicar el triángulo en la esquina superior derecha.
+Asegurarse de que el Excel esté cerrado, pues de lo contrario no se podrá accesar o modificar.
+Una vez se complete la ejecución del programa, el archivo 'ficha_a_generar.xlsx' contendrá las direcciones de las URLs 
+creadas en la columna 'Links'.
+
+===========================================================================================================================
+
+B) Crear y subir las fichas a las URLs recién creadas:
+
+1) Una vez el archivo Excel contenga la información completa de todas las páginas a crear, se pasa a ejecutar los programas.
+    Todos los programas se ubican en el directorio 'Generador MIE'.
+
+    1.1) Verificar que el archivo 'plantilla_para_generar.docx' contiene el formato apropiado para el cliente en cuestión.
+
+        1.1.1) El contenido principal de las plantillas (bajo "Descripción") requiere formato HTML. 
+        Es decir, etiquetas </p>, <h2>, <li>, etc. El programa de subida suministra las etiquetas <html> y <body>, así que
+        hay que asegurarse de que no estén presentes en el contenido.
+        En https://html.onlineviewer.net/ se puede verificar la apariencia final del contenido HTML.
+        1.1.2) Verificar que la plantilla genérica contiene las palabras clave {ciudad} en lugar de e.g. Madrid.
+        o {proveedor} en lugar de Pinkstone, etc. o las fichas no se generarán correctamente.
+        
+    1.4) Verificar que hay un mismo número de plantillas Word en 'Generador MIE/plantillas_generadas' y 
+    direcciones URL en 'Generador MIE/plantillas_generadas/urls.csv' y que están en el mismo orden o las páginas
+    se llenarán de manera incorrecta y habrá que comenzar todo el proceso de de subida de nuevo.
+
+2) Generar los ficheros necesarios y comenzar el proceso de subida.
+
+    IMPORTANTE: asegurarse de que todos los archivos xlsx y docx relacionados están cerrados o las ejecuciones fallarán.
+
+    2.1) Abrir '2-generador_csv_codigos_postales.py' con Visual Studio Code. 
+    Ejecutar con un click en el triángulo en la esquina superior derecha.
+    2.2) Abrir y ejecutar '3-generador_plantillas.py'.
+    Verificar que las plantillas se generaron correctamente (códigos postales correctos, proveedor, etc.)
+    2.3) Abrir y ejecutar '4-generador_urls.py'.
+    El archivo generado se ha de ubicar en el mismo lugar que las plantillas docx, 'Generador MIE/plantillas_generadas'
+    2.4) Abrir y ejecutar '5-mie-subida.py'.
+    Este programa usará las plantillas Word para llenar las páginas ubicadas en 'Generador MIE/plantillas_generadas/urls.csv'
+    2.5) Abrir y ejecutar '6-limpiador.py' una vez haya terminado el proceso para eliminar todos los archivos generados y
+    comenzar con el siguiente grupo de URLs.
+
+En general, si hay errores de tiempo agotado, esto se debe a que hay elementos HTML no accesibles en la página de edición.
+En tal caso, asegurarse de que todas las pestañas necesarias (la de Proveedores, Yoast SEO, Descripción Corta del Producto, etc.)
+están desplegadas.

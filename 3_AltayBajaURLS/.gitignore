@@ -1,0 +1,42 @@
+# Archivo de configuración con credenciales (NO subir a repositorios públicos)
+config.py
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Entornos virtuales
+venv/
+env/
+ENV/
+.venv
+
+# Archivos de Excel temporales
+~$*.xlsx
+~$*.xls
+
+# Archivos temporales de Word
+~$*.docx
+~$*.doc
+
+# Archivos generados (opcional, descomenta si no quieres subirlos)
+# plantillas_generadas/
+# csvs_codigos_postales_ciudades/*.csv
+
+# Variables de entorno
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
